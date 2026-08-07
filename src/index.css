@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: dark;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* shadcn theme tokens (dark) — required by scroll-progress etc. */
+  --background: 260 30% 5%;
+  --foreground: 300 20% 96%;
+  --card: 260 25% 8%;
+  --card-foreground: 300 20% 96%;
+  --border: 270 20% 20%;
+  --input: 270 20% 20%;
+  --ring: 270 90% 65%;
+  --primary: 270 90% 65%;
+  --primary-foreground: 260 30% 5%;
+  --muted: 260 20% 12%;
+  --muted-foreground: 260 10% 65%;
+  --accent: 270 90% 65%;
+  --accent-foreground: 260 30% 5%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --radius: 12px;
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+
+html, body, #root {
+  margin: 0;
+  min-height: 100svh;
+}
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+/* Nicer scrollbars */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.15);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.35); background-clip: padding-box; border: 2px solid transparent; }
+
+/* Selection */
+::selection { background: rgba(168, 85, 247, 0.35); color: white; }
