@@ -80,36 +80,6 @@ export function fetchContributions(year: number | "last"): Promise<ApiPayload> {
   return p;
 }
 
-export type Repo = { name: string; stars: number; description: string | null; url: string };
-
-let reposPromise: Promise<Repo[]> | null = null;
-export function fetchTopRepos(): Promise<Repo[]> {
-  if (reposPromise) return reposPromise;
-  reposPromise = fetch(
-    `https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=updated`,
-  ).then(async (r) => {
-    if (!r.ok) return [];
-    const list = (await r.json()) as Array<{
-      name: string;
-      stargazers_count: number;
-      description: string | null;
-      html_url: string;
-      fork: boolean;
-    }>;
-    return list
-      .filter((r) => !r.fork)
-      .sort((a, b) => b.stargazers_count - a.stargazers_count)
-      .slice(0, 6)
-      .map((r) => ({
-        name: r.name,
-        stars: r.stargazers_count,
-        description: r.description,
-        url: r.html_url,
-      }));
-  });
-  return reposPromise;
-}
-
 /* ------------ stateful demos ------------ */
 
 function OtpDemo() {
@@ -339,74 +309,6 @@ function useContributionsForYear(year: number) {
   }, [year]);
 
   return state;
-}
-
-function TopReposList() {
-  const [repos, setRepos] = useState<Repo[] | null>(null);
-  useEffect(() => {
-    let alive = true;
-    fetchTopRepos().then((r) => alive && setRepos(r));
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  return (
-    <div className="w-full max-w-[720px] rounded-2xl border border-white/[0.06] bg-black/40 p-5">
-      <div className="mb-4 flex items-baseline justify-between">
-        <h3 className="text-sm font-semibold text-white">
-          Top public repos ·{" "}
-          <a
-            href={`https://github.com/${GH_USER}`}
-            target="_blank"
-            rel="noreferrer"
-            className="text-purple-300 underline decoration-purple-500/40 underline-offset-4 hover:text-purple-200"
-          >
-            @{GH_USER}
-          </a>
-        </h3>
-        <span className="text-xs text-white/40">by star count</span>
-      </div>
-      {!repos ? (
-        <div className="grid gap-2">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-10 animate-pulse rounded-lg bg-white/[0.04]" />
-          ))}
-        </div>
-      ) : (
-        <ol className="grid gap-2">
-          {repos.map((r, i) => (
-            <li key={r.name}>
-              <a
-                href={r.url}
-                target="_blank"
-                rel="noreferrer"
-                className="group flex items-center gap-4 rounded-lg border border-transparent px-3 py-2 transition hover:border-white/10 hover:bg-white/[0.03]"
-              >
-                <span className="font-mono text-xs text-white/30 tabular-nums">
-                  {(i + 1).toString().padStart(2, "0")}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-white group-hover:text-purple-100">
-                    {r.name}
-                  </div>
-                  {r.description && (
-                    <div className="truncate text-xs text-white/45">{r.description}</div>
-                  )}
-                </span>
-                <span className="inline-flex shrink-0 items-center gap-1 text-xs text-white/50">
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden>
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                  <span className="tabular-nums">{r.stars.toLocaleString()}</span>
-                </span>
-              </a>
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
-  );
 }
 
 function YearPill({
